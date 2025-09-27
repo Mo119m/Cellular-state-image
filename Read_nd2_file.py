@@ -65,6 +65,62 @@ frame_viewer(data_path)
 # plt.show()   
 
 
+#%% Save as lossless TIFF stack 
+
+"""
+Save ND2 video as TIFF stack and view TIFF stacks
+"""
+
+#%% Function: Save one ND2 video to TIFF stack
+def save_video_as_tiff(nd2_path, video_index, tiff_path):
+    with nd2.ND2File(nd2_path) as f:
+        data = f.asarray().swapaxes(0,1)
+        print("ND2 data shape:", data.shape)  
+        # usually: (n_videos, n_frames, height, width)
+        
+        video = data[video_index]  # select video
+        print(f"Saving Video {video_index}, shape: {video.shape} -> {tiff_path}")
+        
+        # Save as lossless TIFF stack
+        tiff.imwrite(tiff_path, video, photometric="minisblack")
+
+
+#%% Function: View TIFF stack interactively
+def tiff_stack_viewer(tiff_path):
+    video = tiff.imread(tiff_path)  # shape: (n_frames, height, width)
+    n_frames = video.shape[0]
+
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(bottom=0.25)
+    img = ax.imshow(video[0], cmap="gray")
+    print(video[0,:,:])
+    ax.set_title("Frame 0")
+
+    # Slider
+    ax_frame = plt.axes([0.2, 0.1, 0.6, 0.03])
+    slider = Slider(ax_frame, "Frame", 0, n_frames-1, valinit=0, valstep=1)
+
+    def update(val):
+        frame_idx = int(slider.val)
+        img.set_data(video[frame_idx])
+        ax.set_title(f"Frame {frame_idx}")
+        fig.canvas.draw_idle()
+
+    slider.on_changed(update)
+    plt.show()
+
+#%% Save first video as TIFF stack
+save_tiff = r"/Users/khadijehmasumnia/Codes/ML_Marathon/nd2_save_tiff.tif"
+save_video_as_tiff(data_path, video_index=0, tiff_path = save_tiff)
+
+#%% View saved TIFF stack
+tiff_file = r"/Users/khadijehmasumnia/Codes/ML_Marathon/nd2_save_tiff.tif"
+tiff_stack_viewer(tiff_file)
+
+
+
+
+
 
 
 
