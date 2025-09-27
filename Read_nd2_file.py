@@ -8,10 +8,9 @@ Created on Sun Sep 21 21:02:31 2025
 #%% Import Libraries
 import nd2
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 import tifffile as tiff
-import nd2
-import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
 #%% Frame_viewer
@@ -85,13 +84,8 @@ def save_video_as_tiff(nd2_path, video_index, tiff_path):
         tiff.imwrite(tiff_path, video, photometric="minisblack")
 
 #%% Function: View TIFF stack interactively
-import matplotlib
 # Use TkAgg for scripts; remove or change for notebooks
 matplotlib.use("TkAgg")  
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
-import tifffile as tiff
-import numpy as np
 
 def tiff_stack_viewer(tiff_path):
     """
