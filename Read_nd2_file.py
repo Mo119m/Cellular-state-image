@@ -84,30 +84,52 @@ def save_video_as_tiff(nd2_path, video_index, tiff_path):
         # Save as lossless TIFF stack
         tiff.imwrite(tiff_path, video, photometric="minisblack")
 
-
 #%% Function: View TIFF stack interactively
-def tiff_stack_viewer(tiff_path):
-    video = tiff.imread(tiff_path)  # shape: (n_frames, height, width)
-    n_frames = video.shape[0]
+import matplotlib
+# Use TkAgg for scripts; remove or change for notebooks
+matplotlib.use("TkAgg")  
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+import tifffile as tiff
+import numpy as np
 
+def tiff_stack_viewer(tiff_path):
+    """
+    Interactive TIFF stack viewer with a slider for frames.
+    Supports multi-frame TIFFs with any pixel depth.
+    """
+    # Load TIFF
+    video = tiff.imread(tiff_path)  # shape: (n_frames, height, width)
+    if video.ndim == 2:
+        video = video[np.newaxis, :, :]  # convert single-frame to 3D
+
+    n_frames, height, width = video.shape
+    print(f"Video shape: {video.shape}, dtype: {video.dtype}")
+
+    # Convert to float for safe display
+    video_display = video.astype(np.float32)
+    video_display /= video_display.max()  # normalize 0-1 for display
+
+    # Create figure
     fig, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.25)
-    img = ax.imshow(video[0], cmap="gray")
-    print(video[0,:,:])
+    img = ax.imshow(video_display[0], cmap="gray")
     ax.set_title("Frame 0")
 
-    # Slider
+    # Slider axis
     ax_frame = plt.axes([0.2, 0.1, 0.6, 0.03])
     slider = Slider(ax_frame, "Frame", 0, n_frames-1, valinit=0, valstep=1)
 
+    # Update function
     def update(val):
-        frame_idx = int(slider.val)
-        img.set_data(video[frame_idx])
+        frame_idx = int(slider.val)  # safely convert float to int
+        img.set_data(video_display[frame_idx])
         ax.set_title(f"Frame {frame_idx}")
         fig.canvas.draw_idle()
 
     slider.on_changed(update)
-    plt.show()
+
+    plt.show(block=True)
 
 #%% Save first video as TIFF stack
 save_tiff = r"/Users/khadijehmasumnia/Codes/ML_Marathon/nd2_save_tiff.tif"
