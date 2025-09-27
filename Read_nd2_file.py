@@ -4,7 +4,33 @@
 Created on Sun Sep 21 21:02:31 2025
 
 @author: khadijehmasumnia
+
+ND2 and TIFF Viewer Script
+--------------------------
+
+This script provides tools to view and process ND2 microscopy videos 
+and save them as TIFF stacks. It allows interactive exploration of 
+multi-frame ND2 or TIFF files using sliders.
+
+Functions:
+----------
+
+frame_viewer(filepath)
+    Opens an ND2 file at `filepath`, swaps dimensions to put videos 
+    first, and displays an interactive figure with sliders to move 
+    between videos and frames. Updates the title with the current 
+    video/frame index.
+
+save_video_as_tiff(nd2_path, video_index, tiff_path)
+    Saves a single video from an ND2 file as a lossless multi-frame 
+    TIFF stack. `video_index` selects which video to save.
+
+tiff_stack_viewer(tiff_path)
+    Opens a TIFF stack at `tiff_path` and displays an interactive slider 
+    to browse through frames. Supports multi-frame TIFFs with any 
+    bit depth. Automatically normalizes pixel values for display.
 """
+
 #%% Import Libraries
 import nd2
 import numpy as np
