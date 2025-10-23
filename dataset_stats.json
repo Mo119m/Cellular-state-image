@@ -1,0 +1,13 @@
+{
+  "total_frames": 74,
+  "train_frames": 51,
+  "val_frames": 11,
+  "test_frames": 12,
+  "samples": {
+    "LizaMutant38": 10,
+    "MattLines27": 4,
+    "MattLines_1": 17,
+    "MattLines_7": 17,
+    "training": 26
+  }
+}

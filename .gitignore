@@ -4,3 +4,6 @@ training.avi
 training.tif
 *.tif
 *.nd2
+processed_data/
+training_data/
+best_model.pth
